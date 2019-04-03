@@ -12,12 +12,18 @@ from std_msgs.msg import Float64
 startingTime=-1
 startedToRun=False
 
-nothingPWM1 =1575
-nothingPWM2 =1100
-minPWM1 = 1220	# steering
-maxPWM1 = 1900
-minPWM2 = 900	# propulsor
-maxPWM2 = 1350
+#nothingPWM1 =1575 # steering
+#nothingPWM2 =1100 # propulsor
+#minPWM1 = 1220	# steering
+#maxPWM1 = 1900
+#minPWM2 = 900	# propulsor
+#maxPWM2 = 1350
+nothingPWM1 =0 # steering
+nothingPWM2 =0 # propulsor
+minPWM1 = -4500	# steering
+maxPWM1 = 4500
+minPWM2 = 100	# propulsor
+maxPWM2 = -100
 PWM1 = minPWM1
 PWM2 = minPWM2
 indexArray = 0
@@ -33,17 +39,18 @@ indexArray = 0
 # reference plan:
 #	(1000,-400,0);(1000,-200,12); (900,100,24); (500 ,500 ,42); (100,900,56);(-200,920,72)
 # our plan:
-#	(1885, 1350,0),(1839,1350,12),(1764,1305,24),(1560,1350,42),(1355,1305,56),(1275,1314,72)
+#pwm EXPECTED(1885, 1350,0),(1839,1350,12),(1764,1305,24),(1560,1350,42),(1355,1305,56),(1275,1314,72)
+#PWM INSERTED(4292, 100,0 ),(3655,100,12), (2616,82,24),  (-190,100,42),(-2788, 82,56),(-3802,86,72)
 
 
 speedArray =[
 	#leftPWM, rightPWM, time(seconds)
-	(1885, 1350,0),
-	(1839,1350,12),
-	(1764,1305,24),
-	(1560,1350,42),
-	(1355,1305,56),
-	(1275,1314,72)
+	(4292, 100,0 ),
+	(3655, 100,12),
+	(2616,  82,24), 
+	(-190, 100,42),
+	(-2788, 82,56),
+	(-3802, 86,72)
 ]
 
 

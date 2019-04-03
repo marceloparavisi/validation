@@ -19,12 +19,18 @@ compassDirection=0
 #	stop motor: 1500
 #	foward:	    1600
 
-nothingPWM1 =1575
-nothingPWM2 =1100
-minPWM1 = 1220	# steering
-maxPWM1 = 1900
-minPWM2 = 900	# propulsor
-maxPWM2 = 1350
+#nothingPWM1 =1575
+#nothingPWM2 =1100
+#minPWM1 = 1220	# steering
+#maxPWM1 = 1900
+#minPWM2 = 900	# propulsor
+#maxPWM2 = 1350
+nothingPWM1 =0 # steering
+nothingPWM2 =0 # propulsor
+minPWM1 = -4500	# steering
+maxPWM1 = 4500
+minPWM2 = 100	# propulsor
+maxPWM2 = -100
 PWM1 = minPWM1
 PWM2 = minPWM2
 state = 0
