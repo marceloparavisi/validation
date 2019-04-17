@@ -56,15 +56,6 @@ speedArray =[
 	(-3802, maxPWM2*0.86,72)
 ]
 
-speedArray =[
-	#leftPWM, rightPWM, time(seconds)
-	(4292,  maxPWM2,	0 ),
-	(3655,  maxPWM2,	2),
-	(2616,  maxPWM2*0.82,	4), 
-	(-190,  maxPWM2,	6),
-	(-2788, maxPWM2*0.82,	8),
-	(-3802, maxPWM2*0.86,	10)
-]
 
 
 
