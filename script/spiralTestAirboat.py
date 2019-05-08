@@ -53,7 +53,8 @@ speedArray =[
 	(2616,  maxPWM2*0.82,24), 
 	(-190,  maxPWM2,42),
 	(-2788, maxPWM2*0.82,56),
-	(-3802, maxPWM2*0.86,72)
+	(-3802, maxPWM2*0.86,72),
+	(nothingPWM1, nothingPWM2,86)
 ]
 
 
