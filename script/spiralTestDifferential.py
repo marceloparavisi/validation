@@ -45,18 +45,10 @@ speedArray =[
 	(0.9*maxPWM1,	0.100*maxPWM2+0.1,24), 
 	(0.5*maxPWM1,	0.500*maxPWM2,42), 
 	(0.1*maxPWM1+0.1,	0.900*maxPWM2,56),
-	(0.200*minPWM1-0.5,	0.920*maxPWM2,72)
+	(0.200*minPWM1-0.5,	0.920*maxPWM2,72),
+	(nothingPWM1, nothingPWM2,86)
 ]
 
-speedArray =[
-	#leftPWM, rightPWM, time(seconds)
-	(1.0*maxPWM1,	(0.5+0.4)*minPWM2,0),
-	(1.0*maxPWM1,	(0.5+0.2)*minPWM2,2),
-	(0.9*maxPWM1,	(0.1+0.1)*maxPWM2,4), 
-	(0.5*maxPWM1,	0.5*maxPWM2,6), 
-	((0.1)*maxPWM1,	0.9*maxPWM2,8),
-	((0.2)*minPWM1,	0.92*maxPWM2,10)
-]
 
 
 

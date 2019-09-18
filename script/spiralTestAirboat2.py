@@ -21,12 +21,12 @@ armed = False
 #maxPWM1 = 1900
 #minPWM2 = 900	# propulsor
 #maxPWM2 = 1350
-nothingPWM1 =0 # steering
-nothingPWM2 =0 # propulsor
-minPWM1 = -4500	# steering
-maxPWM1 = 4500
-minPWM2 = -100	# propulsor
-maxPWM2 = 100
+nothingPWM1 =1575 # steering
+nothingPWM2 =1100 # propulsor
+minPWM1 = 1220	# steering
+maxPWM1 = 1900
+minPWM2 = 900	# propulsor
+maxPWM2 = 1350
 PWM1 = minPWM1
 PWM2 = minPWM2
 indexArray = 0
@@ -48,13 +48,13 @@ indexArray = 0
 
 speedArray =[
 	#leftPWM, rightPWM, time(seconds)
-	(4292,  maxPWM2,0 ),
-	(3655,  maxPWM2,12),
-	(2616,  maxPWM2*0.82,24), 
-	(-190,  maxPWM2,42),
-	(-2788, maxPWM2*0.82,56),
-	(-3802, maxPWM2*0.86,72),
-	(nothingPWM1, nothingPWM2,86)
+	(0.95*(maxPWM1-nothingPWM1)+nothingPWM1,  maxPWM2,0 ),
+	(0.812*(maxPWM1-nothingPWM1)+nothingPWM1,  maxPWM2,24),
+	(0.58*(maxPWM1-nothingPWM1)+nothingPWM1,  0.82*(maxPWM2-nothingPWM2)+nothingPWM2,48), 
+	(0.04*(minPWM1-nothingPWM1)+nothingPWM1,  maxPWM2,84),
+	(0.62*(minPWM1-nothingPWM1)+nothingPWM1, 0.82*(maxPWM2-nothingPWM2)+nothingPWM2,112),
+	(0.84*(minPWM1-nothingPWM1)+nothingPWM1, 0.86*(maxPWM2-nothingPWM2)+nothingPWM2,144),
+	(nothingPWM1, nothingPWM2,172)
 ]
 
 
@@ -92,10 +92,10 @@ def incrementIndexArray():
 	if (indexArray >= len(speedArray)):
 		exit();
 	try:
-		print "indexArray: ",indexArray
-		resp = commandPWM(0,183,0,1,speedArray[indexArray][0],0,0,0,0,0)
+		print "indexArray: ",indexArray, "pwm :", speedArray[indexArray-1][0], speedArray[indexArray-1][1]
+		resp = commandPWM(0,183,0,1,speedArray[indexArray-1][0],0,0,0,0,0)
 		rate.sleep()
-		resp = commandPWM(0,183,0,3,speedArray[indexArray][1],0,0,0,0,0)
+		resp = commandPWM(0,183,0,3,speedArray[indexArray-1][1],0,0,0,0,0)
 		rate.sleep()
 	except rospy.ServiceException, e:
 		print "Service call failed: %s"%e

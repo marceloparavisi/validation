@@ -9,24 +9,17 @@ from mavros_msgs.srv import SetMode
 from std_msgs.msg import Float64
 from mavros_msgs.msg import State
 
-
 startingTime=-1
 startedToRun=False
 mode = "MANUAL"
 armed = False
 
-#nothingPWM1 =1575 # steering
-#nothingPWM2 =1100 # propulsor
-#minPWM1 = 1220	# steering
-#maxPWM1 = 1900
-#minPWM2 = 900	# propulsor
-#maxPWM2 = 1350
-nothingPWM1 =0 # steering
-nothingPWM2 =0 # propulsor
-minPWM1 = -4500	# steering
-maxPWM1 = 4500
-minPWM2 = -100	# propulsor
-maxPWM2 = 100
+nothingPWM1 =1300 # left
+nothingPWM2 =1300 # right
+minPWM1 = 1200	
+maxPWM1 = 1350  
+minPWM2 = 1200	
+maxPWM2 = 1350  
 PWM1 = minPWM1
 PWM2 = minPWM2
 indexArray = 0
@@ -42,19 +35,19 @@ indexArray = 0
 # reference plan:
 #	(1000,-400,0);(1000,-200,12); (900,100,24); (500 ,500 ,42); (100,900,56);(-200,920,72)
 # our plan:
-#pwm EXPECTED(1885, 1350,0),(1839,1350,12),(1764,1305,24),(1560,1350,42),(1355,1305,56),(1275,1314,72)
-#PWM INSERTED(4292, 100,0 ),(3655,100,12), (2616,82,24),  (-190,100,42),(-2788, 82,56),(-3802,86,72)
+#	(1600, 1440,0),(1600,1420,12),(1590,1510,24),(1550,1550,42),(1510,1590,56),(1420,1592,72)
 
 
 speedArray =[
 	#leftPWM, rightPWM, time(seconds)
-	(4292,  maxPWM2,0 ),
-	(3655,  maxPWM2,12),
-	(2616,  maxPWM2*0.82,24), 
-	(-190,  maxPWM2,42),
-	(-2788, maxPWM2*0.82,56),
-	(-3802, maxPWM2*0.86,72),
-	(nothingPWM1, nothingPWM2,86)
+	(1.0*(maxPWM1-nothingPWM1)+nothingPWM1,	0.400*(minPWM2-nothingPWM2)+nothingPWM2,0),
+	(1.0*(maxPWM1-nothingPWM1)+nothingPWM1,	0.200*(minPWM2-nothingPWM2)+nothingPWM2,24),
+	(0.9*(maxPWM1-nothingPWM1)+nothingPWM1,	0.100*(maxPWM2-nothingPWM2)+nothingPWM2,48), 
+	(0.5*(maxPWM1-nothingPWM1)+nothingPWM1,	0.500*(maxPWM2-nothingPWM2)+nothingPWM2,84), 
+	(0.1*(maxPWM1-nothingPWM1)+nothingPWM1+0.1,	0.900*(maxPWM2-nothingPWM2)+nothingPWM2,112),
+	(0.200*(minPWM1-nothingPWM1)+nothingPWM1-0.5,	0.920*(maxPWM2-nothingPWM2)+nothingPWM2,144),
+	(nothingPWM1, nothingPWM2,172)
+
 ]
 
 
@@ -67,16 +60,17 @@ commandPWM = rospy.ServiceProxy('/mavros/cmd/command', CommandLong)
 commandArming = rospy.ServiceProxy('/mavros/cmd/arming', CommandBool)
 setMode = rospy.ServiceProxy('/mavros/set_mode', SetMode)
 
+
 def exit_handler():
 	global rate
 	print 'Stop propeller'
 	try:
-		resp = commandPWM(0,183,0,3,nothingPWM1,0,0,0,0,0)
+		resp = commandPWM(0,183,0,4,nothingPWM1,0,0,0,0,0)
 	except rospy.ServiceException, e:
 		print "Service call failed: %s"%e
 	rate.sleep()
 	try:
-		resp = commandPWM(0,183,0,1,nothingPWM2,0,0,0,0,0)
+		resp = commandPWM(0,183,0,2,nothingPWM2,0,0,0,0,0)
 	except rospy.ServiceException, e:
 		print "Service call failed: %s"%e
 	rate.sleep()
@@ -92,10 +86,10 @@ def incrementIndexArray():
 	if (indexArray >= len(speedArray)):
 		exit();
 	try:
-		print "indexArray: ",indexArray
-		resp = commandPWM(0,183,0,1,speedArray[indexArray][0],0,0,0,0,0)
+		print "indexArray: ",indexArray, " PWM: ",int(speedArray[indexArray-1][0]), int(speedArray[indexArray-1][1])
+		resp = commandPWM(0,183,0,2,int(speedArray[indexArray-1][0]),0,0,0,0,0)
 		rate.sleep()
-		resp = commandPWM(0,183,0,3,speedArray[indexArray][1],0,0,0,0,0)
+		resp = commandPWM(0,183,0,4,int(speedArray[indexArray-1][1]),0,0,0,0,0)
 		rate.sleep()
 	except rospy.ServiceException, e:
 		print "Service call failed: %s"%e
@@ -105,26 +99,25 @@ def arming():
 	if (armed==True):
 		return True;
 	resp = commandArming(True)
-	rate.sleep()
 	if (resp.success == True):
 		return True
 	print "Couldn't arm"
 	return False
 
 def setGuidedMode():
-	global setMode,mode
+	global setMode, mode
 	if (mode=="GUIDED"):
 		return True;
 	resp = setMode(0,'guided')
 	if (resp.mode_sent == True):
 		return True
-	print "Set guided mode failed"
+	print ("Set guided mode failed. Mode: ",mode)
 	return False
 
 
 
 def spiralTest():
-	global  commandPWM, startingTime, startedToRun
+	global  commandPWM, startingTime, startedToRun, indexArray
 	
 #	rospy.spin()
 	while not rospy.is_shutdown():
@@ -138,12 +131,11 @@ def spiralTest():
 				continue;
 		now = rospy.get_rostime()
 		delta = now.secs + now.nsecs/1000000000 - startingTime
-		print "delta: ",delta," > ",speedArray[indexArray][2]
+		print "delta: ",delta," > ",speedArray[indexArray][2], " pwm: ",speedArray[indexArray-1][0],speedArray[indexArray-1][1]
 		if (delta > speedArray[indexArray][2]):
 			incrementIndexArray()
 
 		rate.sleep()
-
 
 def stateReader(data):
 	global mode, armed
@@ -152,6 +144,7 @@ def stateReader(data):
 	print(" armed: ", armed,"mode: ", mode);
 
 rospy.Subscriber('/mavros/state',State,stateReader)
+
 
 if __name__== '__main__':
 	try:
